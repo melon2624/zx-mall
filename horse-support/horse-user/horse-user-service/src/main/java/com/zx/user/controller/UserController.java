@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
 
+
     @ApiModelProperty("验证码登录，注册")
     public LoginSuccessVo  login(@Validated @RequestBody VerificationCodeLoginDTO loginDTO){
         return null;
