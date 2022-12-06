@@ -1,10 +1,8 @@
 package com.zx.framework.mysql.shard;
 
-import com.zx.framework.common.model.UserLoginInfo;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Optional;
 
 /**

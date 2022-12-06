@@ -18,11 +18,11 @@ public class RedissonAutoConfiguration {
     @Bean
     public RedissonClient redissonClient(@Value("${spring.redis.host}") String host,
                                          @Value("${spring.redis.port}") String port,
-                                         @Value("${spring.redis.password}") String password,
+                                         @Value("${spring.redis.password: }") String password,
                                          @Value("${spring.redis.database:0}") int database
                                          ) {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + host + ":" + port).setPassword(password);
+        config.useSingleServer().setAddress("redis://" + host + ":" + port);
         config.useSingleServer().setConnectionMinimumIdleSize(1);
         config.useSingleServer().setDatabase(database);
         return Redisson.create(config);
