@@ -36,7 +36,10 @@
             <groupId>com.zx</groupId>
             <artifactId>horse-framework-starter-dubbo</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.zx</groupId>
+            <artifactId>horse-framework-starter-mysql</artifactId>
+        </dependency>
 
 
     </dependencies>

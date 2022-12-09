@@ -1,6 +1,5 @@
 package com.zx.user.controller;
 
-import com.zx.framework.redis.RedisClient;
 import com.zx.user.manager.LoginManager;
 import com.zx.user.model.dto.VerificationCodeLoginDTO;
 import com.zx.user.model.vo.LoginSuccessVo;
@@ -27,9 +26,13 @@ public class UserController {
     @Resource
     LoginManager loginManager;
 
+    @Value("${spring.cloud.nacos.config.shared-configs}")
+    String aaa;
+
     @PostMapping("/login")
     @ApiModelProperty("验证码登录，注册")
     public LoginSuccessVo login(@Validated @RequestBody VerificationCodeLoginDTO loginDTO) {
+        System.out.println(aaa);
         return loginManager.checkVerificationCodeLogin(loginDTO);
 
     }

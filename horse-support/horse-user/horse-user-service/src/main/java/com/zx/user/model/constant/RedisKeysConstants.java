@@ -12,4 +12,6 @@ public class RedisKeysConstants {
 
     public static final String LOGIN_VERIFICATION_CODE_INTERVAL = APP_KEY + "login-verification-code-interval:";
 
+    public static final String USER_TOKEN_MAP = APP_KEY + "user_token_mapV2:";
+
 }
