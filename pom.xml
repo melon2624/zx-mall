@@ -11,6 +11,7 @@
     <modules>
         <module>horse-support</module>
         <module>horse-framework</module>
+        <module>horse-business</module>
     </modules>
 
     <distributionManagement>

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @author zhangxin
  * @date 2022/12/5 14:33
  */
-@Configuration
 @SpringBootApplication(scanBasePackages = "com.zx.user")
 public class UserApplication {
 

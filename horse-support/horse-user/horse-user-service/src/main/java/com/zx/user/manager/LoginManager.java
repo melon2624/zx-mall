@@ -1,15 +1,17 @@
 package com.zx.user.manager;
 
-import com.model.UserLoginInfo;
+import com.zx.framework.common.exception.BizException;
+import com.zx.framework.common.model.UserLoginInfo;
 import com.zx.framework.redis.RedisClient;
 import com.zx.framework.web.result.BizAssert;
 import com.zx.user.exception.UserExceptionCodeEnum;
 import com.zx.user.model.dto.VerificationCodeLoginDTO;
 import com.zx.user.model.entity.User;
 import com.zx.user.model.entity.UserLoginLimit;
+import com.zx.user.model.entity.UserLoginRecord;
 import com.zx.user.model.vo.LoginSuccessVo;
-import com.zx.user.service.UserLoginLimitService;
-import com.zx.user.service.UserServie;
+import com.zx.user.service.*;
+import com.zx.user.service.convert.UserConvert;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,23 @@ public class LoginManager {
     UserServie userServie;
 
     @Resource
+    private UserConvert userConvert;
+
+    @Resource
     UserLoginLimitService userLoginLimitService;
+
+    @Resource
+    EmployeeService employeeService;
+
+    @Resource
+    private PermissionManager permissionManager;
+
+    @Resource
+    private UserLoginRecordService userLoginRecordService;
+
+    @Resource
+    private UserSystemRelationService userSystemRelationService;
+
 
     @Resource
     private TokenManager tokenManager;
@@ -76,9 +91,27 @@ public class LoginManager {
                     return userServie.register(phone, loginDTO.getClientId(), loginDTO.getSystemId());
                 }
         );
+
+        //校验是否超出登录设备
         checkBeyondLoginLimit(user.getId(), loginDTO);
 
-        return null;
+        UserLoginInfo userLoginInfo = userConvert.toUserLoginInfo(user);
+
+        //判断是否 B端用户
+/*        Optional.ofNullable(employeeService.getEmplyeeByUserId(user.getId()))
+                .ifPresent(e->{
+                   userLoginInfo.setEmployeeId(e.getId());
+                    permissionManager.setEmployeePermissionToRedis(e.getId());
+                });*/
+
+        //写缓存token
+        String token = tokenManager.generateUserTokenAndSessionWriteRedis(userLoginInfo).getToken();
+
+        userLoginRecordService.save(user.getId(), token, loginDTO.getClientId(), loginDTO.getSystemId());
+
+        userSystemRelationService.save(user.getId(), loginDTO.getSystemId());
+
+        return LoginSuccessVo.builder().user(userLoginInfo).token(token).build();
     }
 
     public void checkBeyondLoginLimit(Long userId, VerificationCodeLoginDTO loginDTO) {
@@ -89,9 +122,24 @@ public class LoginManager {
         }
         UserLoginLimit userLoginLimit = userLoginLimitOptional.get();
         Map<String, UserLoginInfo> userTokenMap = tokenManager.getUserTokenMap(userId);
-        Map<String,List<UserLoginInfo>> userLoginCount = userTokenMap.values().stream().filter(userLoginInfo -> Objects.nonNull(userLoginInfo.getClientId()) && Objects.nonNull(userLoginInfo.getSystemId()))
+        Map<String, List<UserLoginInfo>> userLoginCount = userTokenMap.values().stream().filter(userLoginInfo -> Objects.nonNull(userLoginInfo.getClientId()) && Objects.nonNull(userLoginInfo.getSystemId()))
                 .collect(Collectors.groupingBy(userLoginInfo -> userLoginInfo.getSystemId().toString() + userLoginInfo.getClientId()));
-       // List<UserLoginInfo> userLoginInfos =
+
+        List<UserLoginInfo> userLoginInfos = userLoginCount.get(loginDTO.getClientId().toString() + loginDTO.getSystemId());
+
+        Integer count = Optional.ofNullable(userLoginInfos).map(List::size).orElse(0);
+
+        if (userLoginLimit.getLoginLimitNum() <= count) {
+            if (userLoginLimit.getBeyondMode() == 1) {
+                throw new BizException("您已超出登录限制");
+            } else {
+                if (Objects.nonNull(userLoginInfos) && !userLoginInfos.isEmpty()) {
+                    Optional<UserLoginInfo> userLoginInfoOptional = userLoginInfos.stream().min(Comparator.comparing(UserLoginInfo::getTokenExpireTime));
+                    userLoginInfoOptional.ifPresent(userLoginInfo -> tokenManager.removeToken(userLoginInfo));
+                }
+            }
+        }
+
     }
 
     public void loginSendSms(String phone) {

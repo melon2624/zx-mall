@@ -32,7 +32,7 @@ public class UserController {
     @PostMapping("/login")
     @ApiModelProperty("验证码登录，注册")
     public LoginSuccessVo login(@Validated @RequestBody VerificationCodeLoginDTO loginDTO) {
-        System.out.println(aaa);
+       // System.out.println(aaa);
         return loginManager.checkVerificationCodeLogin(loginDTO);
 
     }

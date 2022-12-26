@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zx.mall.product.mapper.ProductCategoryMapper">
+
+
+    <update id="setSort">
+
+        update product_category a,
+            (select ifnull( MAX(b.sort), 0) max_sort from product_category b where parent_id = ${parentId}) temp
+      set a.sort = temp.max_sort+1
+        where id = ${id}
+
+
+    </update>
+
+
+</mapper>

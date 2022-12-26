@@ -3,18 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>horse-support</artifactId>
+        <artifactId>horse-business</artifactId>
         <groupId>com.zx</groupId>
         <version>1.0.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>horse-user</artifactId>
+    <artifactId>mall-product</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>horse-user-service</module>
-        <module>horse-user-api</module>
-        <module>horse-user-auth</module>
+        <module>mall-product-service</module>
     </modules>
 
     <properties>

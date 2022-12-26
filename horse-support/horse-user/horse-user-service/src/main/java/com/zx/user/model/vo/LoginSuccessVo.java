@@ -1,6 +1,6 @@
 package com.zx.user.model.vo;
 
-import com.model.UserLoginInfo;
+import com.zx.framework.common.model.UserLoginInfo;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

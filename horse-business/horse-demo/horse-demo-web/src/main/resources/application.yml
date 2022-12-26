@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: horseWebDemo
+  profiles:
+    active: dev
