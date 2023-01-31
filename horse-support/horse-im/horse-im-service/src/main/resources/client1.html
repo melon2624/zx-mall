@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket客户端</title>
+    <script type="text/javascript" src="D:\web\webpack-demo\dist\reqMessage.js"></script>
+    <script type="text/javascript" src="D:\web\webpack-demo\dist\rspMessage.js"></script>
+</head>
+<body>
+<script>
+    var socket;
+    if (window.WebSocket) {
+        //socket = new WebSocket("wss://you-gateway.mashibing.com/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJsYXN0TG9naW5UaW1lIjoiMjAyMi0wNC0yNFQxNTo1MTowMiIsInN5c3RlbUlkIjoxLCJjbGllbnRJZCI6MSwidW5pb25JZCI6IiIsImdlbmRlciI6MywicGhvbmUiOiIxODkxMTUzNjc4MiIsImlkQ2FyZCI6IiIsIm5pY2tuYW1lIjoi6ZqP5py65pi156ewIiwiaWQiOjksImV4cCI6NDA3MDg4MDAwMCwiYWNjb3VudCI6IiJ9.0BV5wmcaXu8rlNAVjGIioW8EiS7g9DNEELdddMMKHHUaw2rEvrgEeY_9pyjqDe17TtHO4FbOjp0uHcVEkDvMQbXfbQe4EvwmJNH-dAzbp58ti-UsHg-FjC4oxelrAOFQngDBHn_1zOKcxTmYBLWM9rMt8TaIJpCSagOJxkAKE08");
+        //socket = new WebSocket("wss://k8s-horse-gateway.mashibing.cn/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjQwNzA4ODAwMDAsImlkIjo4fQ.TofJf0TzPK9uq0AzPj5Anowom2kXHf0trJuMgncYyxdhtTW3n9H7jcKovsg3gV3T9zeqku7J88JFGc-_IGkI35u2eU-2Pw74FIjS6O1AzEnYQSJOw1gbNcSeNcTVO765nkbXQJZ17yNTKOxC2cOVnkRvHVrv6V_6WXwkGo0uNa0");
+        //socket = new WebSocket("wss://k8s-horse-gateway.mashibing.cn/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjQwNzA4ODAwMDAsImlkIjoyLCJ0aW1lIjoxNjUyODYzNTMyNTM5fQ.r-G8Ht0Rb_WuQdzBLPdY5FlWSi1s9hbIdgXYyXbTzEthFWikLDMNAkmpVBIgIOc4C-vo3kVCtFtsCPm48DgiqzX0zLMez-J0McZe3tRWSx9mp9x98NhAsI0HE0i-yUxSaFza0tEXxQ5eIIPaNg7GTp3w7W5zIKc1jJ18qkZ5dgU&type=1");
+        //socket = new WebSocket("ws://192.168.10.92:8090/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjQwNzA4ODAwMDAsImlkIjo4LCJ0aW1lIjoxNjUyODY2MTQ4NzUwfQ.PLAlegvijmUh9COP8QDv5bCcBAfQR8HaI9T0cEHHWD21yoU9np5Owhy9qD1U_wjFo0IWqGhP55bWS6cDVNwJrvVQeZZqY_zs6zZMpg8dlh_Wx2NcHamLZN64G4xRYFiHLi_lyC5ecVQ0UdkLbmZeJQ2002sHRMZdesk8K7o2KPk&type=1");
+        //socket = new WebSocket("wss://k8s-horse-gateway.mashibing.cn/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjQwNzA4ODAwMDAsImlkIjoxNSwidGltZSI6MTY1Mjc2NjI2NDc3M30.Wq44Nx0v23nFfGzoUhdRvz1ojiMxKF93S0kRPSCgQYrBPri7vBNBotea6GkJGhJpowyWAYHM1jqRMNIcO5hYS2_8RdWcbTh6zFG7ZnXBZ-YPE8t_u0zl_CrYcF-j2ZkhPXxmM8WBFIUn_7gS-j3QwvFrN2jJFHZFKhm-IbnULmg&type=1");
+
+        socket = new WebSocket("ws://192.168.10.94:8090/ws?client=yan_xuan&user=2&nickname=周渺&avatar=https://msb-edu-dev.oss-cn-beijing.aliyuncs.com/uc/account-avatar/桌面水果.jpg&connect=2&ticket=" + urlencode("9kpEgiLzVG14znSTvElLOE5hb6Cjh5PL+MjdNZs3isnzDGnE+UXmVOvUs4ixyPeQ"));
+        socket.binaryType = "arraybuffer";
+        //socket = new WebSocket("wss://k8s-horse-gateway.mashibing.cn/ws?client=eyJhbGciOiJSUzI1NiJ9.eyJleHAiOjQwNzA4ODAwMDAsImlkIjoxMDMsInRpbWUiOjE2NTM2MzM1MDg0MjZ9.NLPy7I1UtN6eE07nV75zv71fCwJqLSJ2aHod50VWCp7XSiXCHBJ1m16BRec5J0kF4GZ1-x9WqhG5pdnlkSfE15E_2C7Jx19lF1Tiv2Nn23ApC1bIJe8dsFwG-LrwRpW05y-A3nsGz2nt6jJZnFKRHH3MWam_0AU1aN2uYVsNAj4&type=1");
+
+        socket.onmessage = function (event) {
+
+            var ta = document.getElementById('responseText');
+            var uint8Array = new Uint8Array(event.data);
+            var msg1 = proto.RspModel.deserializeBinary(uint8Array);
+            var content = msg1.getContent();
+            var traceid = msg1.getTraceid();
+            var tracetype = msg1.getTracetype();
+            var code = msg1.getCode();
+            var message = msg1.getMessage();
+            // if (tracetype !== 0) {
+                ta.value = ta.value + "\n\ntraceid=" + traceid + "\ntracetype=" + tracetype + "\ncontent=" + content + "\ncode=" + code + "\nmessage=" + message;
+            // }
+        }
+
+        socket.onopen = function (event) {
+            var ta = document.getElementById('responseText');
+
+            ta.value = "连接开启!";
+            setInterval(() => {
+                send(guid(), 0, "{\"text\": \"ping\"}")
+            }, 3000);
+        }
+
+
+        socket.onclose = function (event) {
+            var ta = document.getElementById("responseText");
+            ta.value = ta.value + "\n" + "连接断开";
+        }
+    } else {
+        alert("浏览器不支持WebSocket");
+    }
+
+    function send(traceId, traceType, content) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN || true) {
+            var messageModel = new proto.ReqModel();
+
+            messageModel.setTraceid(traceId);
+            messageModel.setTracetype(traceType);
+            messageModel.setContent(content);
+            var serializeBinary = messageModel.serializeBinary();
+            socket.send(serializeBinary);
+        } else {
+            alert("连接尚未开启");
+        }
+    };
+
+    function urlencode(str) {
+        str = (str + '').toString();
+
+        return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+    };
+
+    function guid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c == 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+</script>
+<form onsubmit="return false">
+    <textarea name="messageDTO" style="width:400px;height:200px"></textarea>
+
+    <input type="button" value="发送数据" onclick="send(this.form.messageDTO.value)">
+
+    <h3>服务端输出：</h3>
+
+    <textarea id="responseText" style="width:400px; height:300px"></textarea>
+
+    <input type="button" onclick="javascript:document.getElementById('responseText').value=''" value="清空内容">
+</form>
+</body>
+</html>

@@ -14,6 +14,9 @@
     <modules>
         <module>horse-demo</module>
         <module>mall-product</module>
+        <module>mall-marketing</module>
+        <module>mall-trade</module>
+        <module>mall-im</module>
     </modules>
 
 

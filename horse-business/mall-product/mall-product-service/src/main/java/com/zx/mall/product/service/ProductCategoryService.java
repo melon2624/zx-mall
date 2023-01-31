@@ -5,6 +5,7 @@ import com.zx.framework.web.result.BizAssert;
 import com.zx.mall.product.mapper.ProductCategoryMapper;
 import com.zx.mall.product.model.dto.admin.ProductCategoryModifyDTO;
 import com.zx.mall.product.model.dto.admin.ProductCategoryQueryDTO;
+import com.zx.mall.product.model.dto.admin.SortModifyDTO;
 import com.zx.mall.product.model.entity.ProductCategory;
 import com.zx.mall.product.model.vo.admin.ProductCategoryVO;
 import com.zx.mall.product.service.convert.ProductCategoryConvert;
@@ -24,6 +25,12 @@ public class ProductCategoryService extends ServiceImpl<ProductCategoryMapper, P
 
     @Resource
     ProductCategoryConvert productCategoryConvert;
+
+    @Resource
+    ProductService productService;
+
+    @Resource
+    private ProductCategoryMapper productCategoryMapper;
 
 
     private static final long PARENT_ID = 0L;
@@ -52,5 +59,36 @@ public class ProductCategoryService extends ServiceImpl<ProductCategoryMapper, P
     public List<ProductCategoryVO> listUserTree(ProductCategoryQueryDTO productCategoryQueryDTO) {
 
         return null;
+    }
+
+    public Boolean update(Long id, ProductCategoryModifyDTO productCategoryModifyDTO) {
+        ProductCategory productCategory = productCategoryConvert.toEntity(productCategoryModifyDTO);
+        productCategory.setId(id);
+        Long parentId = productCategory.getParentId();
+        if (parentId != null && parentId != PARENT_ID) {
+            // 设置分级：父分类分级+1
+            ProductCategory parentCateGory = getById(parentId);
+            productCategory.setLevel(parentCateGory.getLevel() + 1);
+        }
+        return updateById(productCategory);
+    }
+
+    /**
+     * 转移分类下的商品
+     *
+     * @param oldId 老分类id
+     * @param newId 新分类id
+     * @return boolean
+     */
+    public Integer transfer(Long oldId, Long newId) {
+        return productService.updateCategory(oldId, newId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateSort(SortModifyDTO sortModifyDTO) {
+        Long id = sortModifyDTO.getId();
+        Integer oldSort=sortModifyDTO.getOldSort();
+        Integer currentSort=sortModifyDTO.getCurrentSort();
+        return productCategoryMapper.updateSort(id,oldSort,currentSort);
     }
 }

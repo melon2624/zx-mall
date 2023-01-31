@@ -13,6 +13,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>horse-user</module>
+        <module>horse-third</module>
+
 
     </modules>
 

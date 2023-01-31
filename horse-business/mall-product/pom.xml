@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>mall-product-service</module>
+        <module>mall-product-api</module>
     </modules>
 
     <properties>
